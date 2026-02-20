@@ -1,65 +1,340 @@
-import Image from "next/image";
+import Link from "next/link";
+import { Header, Footer } from "@/components/layout";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Calendar,
+  Video,
+  Gift,
+  Users,
+  Heart,
+  Star,
+  ArrowRight,
+  CheckCircle,
+} from "lucide-react";
 
-export default function Home() {
+const features = [
+  {
+    icon: Calendar,
+    title: "イベント予約",
+    description: "ママ友との交流イベントにかんたん予約。お子さま連れでも安心して参加できます。",
+  },
+  {
+    icon: Video,
+    title: "限定動画",
+    description: "子育てに役立つ動画コンテンツをいつでも視聴可能。すきま時間に学べます。",
+  },
+  {
+    icon: Gift,
+    title: "お得なクーポン",
+    description: "協賛企業様からの特別クーポンで、子育てグッズをお得にゲット。",
+  },
+  {
+    icon: Users,
+    title: "コミュニティ",
+    description: "同じ境遇のママたちとつながる、あなたの「第2のホーム」。",
+  },
+];
+
+const plans = [
+  {
+    name: "お試しプラン",
+    price: "980",
+    features: ["月2回までイベント参加", "コミュニティ参加"],
+    highlight: false,
+  },
+  {
+    name: "スタンダードプラン",
+    price: "2,980",
+    features: [
+      "月5回までイベント参加",
+      "限定動画の視聴",
+      "クーポン利用",
+      "コミュニティ参加",
+    ],
+    highlight: true,
+  },
+  {
+    name: "プレミアムプラン",
+    price: "4,980",
+    features: [
+      "イベント参加し放題",
+      "24時間先行予約",
+      "限定動画の視聴",
+      "クーポン利用",
+      "コミュニティ参加",
+    ],
+    highlight: false,
+  },
+];
+
+const upcomingEvents = [
+  {
+    id: 1,
+    title: "ベビーヨガ体験会",
+    date: "2026年3月5日（水）10:00〜",
+    location: "渋谷コミュニティセンター",
+    spots: 3,
+  },
+  {
+    id: 2,
+    title: "ママランチ交流会",
+    date: "2026年3月8日（土）12:00〜",
+    location: "代官山カフェ",
+    spots: 5,
+  },
+  {
+    id: 3,
+    title: "親子リトミック教室",
+    date: "2026年3月12日（水）11:00〜",
+    location: "目黒区民センター",
+    spots: 8,
+  },
+];
+
+export default function HomePage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className="flex min-h-screen flex-col">
+      <Header />
+
+      <main className="flex-1">
+        {/* ヒーローセクション */}
+        <section className="relative overflow-hidden bg-gradient-to-b from-cream to-white py-16 md:py-24">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-3xl text-center">
+              <Badge className="mb-4 bg-brand/10 text-brand hover:bg-brand/20">
+                0〜3歳児ママのためのコミュニティ
+              </Badge>
+              <h1 className="font-heading text-4xl font-bold leading-tight text-text-primary md:text-5xl lg:text-6xl">
+                ママのままで
+                <br />
+                <span className="text-brand">わたしのままで</span>
+              </h1>
+              <p className="mt-6 text-lg text-text-secondary">
+                転勤族でも、はじめての土地でも大丈夫。
+                <br />
+                mamamamaは、あなたの「第2のホーム」になります。
+              </p>
+              <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
+                <Button size="lg" className="rounded-xl text-base" asChild>
+                  <Link href="/login">
+                    会員ログイン
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="rounded-xl border-brand text-base text-brand hover:bg-brand/5"
+                  asChild
+                >
+                  <Link href="/sponsors">協賛企業を見る</Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+          {/* 装飾 */}
+          <div className="absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-brand/10 blur-3xl" />
+          <div className="absolute -right-10 top-10 h-60 w-60 rounded-full bg-brand-light/30 blur-3xl" />
+        </section>
+
+        {/* 特徴セクション */}
+        <section className="py-16 md:py-24">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-2xl text-center">
+              <h2 className="font-heading text-3xl font-bold text-text-primary md:text-4xl">
+                mamamamaでできること
+              </h2>
+              <p className="mt-4 text-text-secondary">
+                忙しいママの毎日をもっと楽しく、もっと豊かに。
+              </p>
+            </div>
+            <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+              {features.map((feature) => (
+                <Card
+                  key={feature.title}
+                  className="border-none bg-white shadow-sm transition-shadow hover:shadow-md"
+                >
+                  <CardHeader>
+                    <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-xl bg-brand/10">
+                      <feature.icon className="h-6 w-6 text-brand" />
+                    </div>
+                    <CardTitle className="font-heading text-lg">
+                      {feature.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-text-secondary">
+                      {feature.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* イベントセクション */}
+        <section className="bg-beige py-16 md:py-24">
+          <div className="container mx-auto px-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="font-heading text-3xl font-bold text-text-primary md:text-4xl">
+                  近日開催のイベント
+                </h2>
+                <p className="mt-2 text-text-secondary">
+                  会員限定のイベントに参加しよう
+                </p>
+              </div>
+              <Button variant="ghost" className="hidden text-brand md:flex" asChild>
+                <Link href="/events">
+                  すべて見る
+                  <ArrowRight className="ml-1 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+            <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {upcomingEvents.map((event) => (
+                <Card
+                  key={event.id}
+                  className="overflow-hidden border-none bg-white shadow-sm transition-shadow hover:shadow-md"
+                >
+                  <div className="aspect-video bg-gradient-to-br from-brand-light to-cream" />
+                  <CardContent className="p-5">
+                    <div className="mb-2 flex items-center gap-2">
+                      <Badge
+                        variant="secondary"
+                        className="bg-brand/10 text-brand"
+                      >
+                        残り{event.spots}席
+                      </Badge>
+                    </div>
+                    <h3 className="font-heading text-lg font-semibold">
+                      {event.title}
+                    </h3>
+                    <div className="mt-3 space-y-1 text-sm text-text-secondary">
+                      <p className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4" />
+                        {event.date}
+                      </p>
+                      <p className="flex items-center gap-2">
+                        <Users className="h-4 w-4" />
+                        {event.location}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            <div className="mt-6 text-center md:hidden">
+              <Button variant="outline" className="rounded-xl" asChild>
+                <Link href="/events">
+                  すべてのイベントを見る
+                  <ArrowRight className="ml-1 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        {/* 料金プランセクション */}
+        <section className="py-16 md:py-24">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-2xl text-center">
+              <h2 className="font-heading text-3xl font-bold text-text-primary md:text-4xl">
+                料金プラン
+              </h2>
+              <p className="mt-4 text-text-secondary">
+                あなたのライフスタイルに合わせて選べる3つのプラン
+              </p>
+            </div>
+            <div className="mt-12 grid gap-6 md:grid-cols-3">
+              {plans.map((plan) => (
+                <Card
+                  key={plan.name}
+                  className={`relative border-2 ${
+                    plan.highlight
+                      ? "border-brand shadow-lg"
+                      : "border-transparent shadow-sm"
+                  }`}
+                >
+                  {plan.highlight && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                      <Badge className="bg-brand text-white">
+                        <Star className="mr-1 h-3 w-3" />
+                        おすすめ
+                      </Badge>
+                    </div>
+                  )}
+                  <CardHeader className="text-center">
+                    <CardTitle className="font-heading text-xl">
+                      {plan.name}
+                    </CardTitle>
+                    <div className="mt-4">
+                      <span className="text-4xl font-bold text-text-primary">
+                        ¥{plan.price}
+                      </span>
+                      <span className="text-text-secondary">/月（税込）</span>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-3">
+                      {plan.features.map((feature) => (
+                        <li key={feature} className="flex items-start gap-2">
+                          <CheckCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-success" />
+                          <span className="text-sm text-text-secondary">
+                            {feature}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            <p className="mt-8 text-center text-sm text-text-light">
+              ※ 会員登録は管理者による招待制です。詳しくは
+              <a
+                href="https://instagram.com/mamamama.circle"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-brand hover:underline"
+              >
+                Instagram
+              </a>
+              からお問い合わせください。
+            </p>
+          </div>
+        </section>
+
+        {/* CTAセクション */}
+        <section className="bg-gradient-to-r from-brand to-brand-dark py-16 md:py-20">
+          <div className="container mx-auto px-4 text-center">
+            <Heart className="mx-auto h-12 w-12 text-white/80" />
+            <h2 className="mt-4 font-heading text-3xl font-bold text-white md:text-4xl">
+              一人じゃない、を実感しよう
+            </h2>
+            <p className="mx-auto mt-4 max-w-xl text-white/90">
+              mamamamaには、あなたと同じように子育てを頑張るママたちがいます。
+              <br />
+              一緒に笑って、一緒に悩んで、一緒に成長していきましょう。
+            </p>
+            <Button
+              size="lg"
+              className="mt-8 rounded-xl bg-white text-brand hover:bg-white/90"
+              asChild
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+              <Link href="/login">
+                会員ログイン
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+          </div>
+        </section>
       </main>
+
+      <Footer />
     </div>
   );
 }
