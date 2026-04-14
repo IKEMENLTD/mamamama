@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { Menu, X, User, LogOut, Settings } from "lucide-react";
@@ -59,10 +60,15 @@ export function Header({ isLoggedIn = false, userName = "" }: HeaderProps) {
     <header className="sticky top-0 z-50 w-full border-b border-brand/20 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* ロゴ */}
-        <Link href="/" className="flex items-center space-x-2">
-          <span className="font-heading text-2xl font-bold text-brand">
-            mamamama
-          </span>
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/images/logo-horizontal.png"
+            alt="mamamama"
+            width={160}
+            height={48}
+            className="h-10 w-auto"
+            priority
+          />
         </Link>
 
         {/* デスクトップナビゲーション */}

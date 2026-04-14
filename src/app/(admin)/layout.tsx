@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -69,8 +70,14 @@ function SidebarContent({ pathname }: { pathname: string }) {
     <div className="flex h-full flex-col">
       {/* ロゴ */}
       <div className="flex h-16 items-center border-b border-sidebar-border px-6">
-        <Link href="/admin" className="font-heading text-xl font-bold text-brand">
-          mamamama
+        <Link href="/admin" className="flex items-center">
+          <Image
+            src="/images/logo-horizontal.png"
+            alt="mamamama"
+            width={120}
+            height={36}
+            className="h-7 w-auto"
+          />
         </Link>
         <span className="ml-2 rounded bg-brand/10 px-2 py-0.5 text-xs font-medium text-brand">
           管理
@@ -159,8 +166,14 @@ export default function AdminLayout({
               </Button>
             </SheetTrigger>
           </Sheet>
-          <Link href="/admin" className="font-heading text-xl font-bold text-brand">
-            mamamama
+          <Link href="/admin" className="flex items-center">
+            <Image
+              src="/images/logo-horizontal.png"
+              alt="mamamama"
+              width={120}
+              height={36}
+              className="h-7 w-auto"
+            />
           </Link>
           <span className="rounded bg-brand/10 px-2 py-0.5 text-xs font-medium text-brand">
             管理

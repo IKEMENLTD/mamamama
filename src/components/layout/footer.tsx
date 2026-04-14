@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Instagram } from "lucide-react";
 
 const footerLinks = [
@@ -15,8 +16,14 @@ export function Footer() {
         <div className="flex flex-col items-center gap-6 md:flex-row md:justify-between">
           {/* ロゴ */}
           <div className="text-center md:text-left">
-            <Link href="/" className="font-heading text-xl font-bold text-brand">
-              mamamama
+            <Link href="/" className="inline-block">
+              <Image
+                src="/images/logo-horizontal.png"
+                alt="mamamama"
+                width={140}
+                height={42}
+                className="h-8 w-auto"
+              />
             </Link>
             <p className="mt-1 text-sm text-text-light">
               ママのままで わたしのままで

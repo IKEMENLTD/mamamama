@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
@@ -63,8 +64,14 @@ export default function LoginPage() {
       {/* ヘッダー */}
       <header className="py-6">
         <div className="container mx-auto px-4">
-          <Link href="/" className="font-heading text-2xl font-bold text-brand">
-            mamamama
+          <Link href="/" className="inline-block">
+            <Image
+              src="/images/logo-vertical.png"
+              alt="mamamama"
+              width={160}
+              height={190}
+              className="h-24 w-auto"
+            />
           </Link>
         </div>
       </header>

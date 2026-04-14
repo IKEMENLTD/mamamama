@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Header, Footer } from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -113,6 +114,16 @@ export default function HomePage() {
         <section className="relative overflow-hidden bg-gradient-to-b from-cream to-white py-16 md:py-24">
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-3xl text-center">
+              <div className="mx-auto mb-6 w-48 md:w-64">
+                <Image
+                  src="/images/logo-vertical.png"
+                  alt="mamamama - ママのままで わたしのままで"
+                  width={256}
+                  height={300}
+                  className="mx-auto h-auto w-full"
+                  priority
+                />
+              </div>
               <Badge className="mb-4 bg-brand/10 text-brand hover:bg-brand/20">
                 0〜3歳児ママのためのコミュニティ
               </Badge>
@@ -144,9 +155,19 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-          {/* 装飾 */}
-          <div className="absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-brand/10 blur-3xl" />
-          <div className="absolute -right-10 top-10 h-60 w-60 rounded-full bg-brand-light/30 blur-3xl" />
+          {/* 装飾 - たんぽぽイラスト */}
+          <div className="absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-brand/5 blur-3xl" />
+          <div className="absolute -right-10 top-10 h-60 w-60 rounded-full bg-brand-light/20 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-6 -right-6 w-32 opacity-20 md:w-48 md:opacity-25">
+            <Image
+              src="/images/logo-vertical.png"
+              alt=""
+              width={192}
+              height={225}
+              className="h-auto w-full"
+              aria-hidden="true"
+            />
+          </div>
         </section>
 
         {/* 特徴セクション */}
@@ -321,7 +342,13 @@ export default function HomePage() {
         {/* CTAセクション */}
         <section className="bg-gradient-to-r from-brand to-brand-dark py-16 md:py-20">
           <div className="container mx-auto px-4 text-center">
-            <Heart className="mx-auto h-12 w-12 text-white/80" />
+            <Image
+              src="/images/logo-dandelion.png"
+              alt=""
+              width={80}
+              height={96}
+              className="mx-auto h-20 w-auto opacity-30"
+            />
             <h2 className="mt-4 font-heading text-3xl font-bold text-white md:text-4xl">
               一人じゃない、を実感しよう
             </h2>
