@@ -10,30 +10,21 @@ import {
   ArrowRight,
   Clock,
   MapPin,
-  Star,
 } from "lucide-react";
 
-type Plan = "trial" | "standard" | "premium";
-
 // ダミーデータ（後でバックエンドと連携）
-const userData: {
-  name: string;
-  plan: Plan;
-  planName: string;
-  monthlyLimit: number;
-  monthlyUsed: number;
-} = {
+const userData = {
   name: "田中 さくら",
-  plan: "standard",
-  planName: "スタンダードプラン",
-  monthlyLimit: 5,
-  monthlyUsed: 2,
+  planName: "あんしんパスママ会部",
+  planSlug: "mama-kai",
+  planColor: "#F9A8D4",
+  planCategories: ["MAMA_KAI"],
 };
 
-const planLabels = {
-  trial: { name: "お試しプラン", color: "bg-text-light" },
-  standard: { name: "スタンダードプラン", color: "bg-brand" },
-  premium: { name: "プレミアムプラン", color: "bg-brand-dark" },
+const categoryLabels: Record<string, { name: string; color: string }> = {
+  MAMA_KAI: { name: "ママ会", color: "bg-pink-100 text-pink-700" },
+  EXERCISE: { name: "運動", color: "bg-green-100 text-green-700" },
+  LEARNING: { name: "学び", color: "bg-blue-100 text-blue-700" },
 };
 
 const upcomingReservations = [
@@ -81,8 +72,6 @@ const quickLinks = [
 ];
 
 export default function MyPage() {
-  const remainingEvents = userData.monthlyLimit - userData.monthlyUsed;
-
   return (
     <div className="container mx-auto px-4 py-8">
       {/* ウェルカムセクション */}
@@ -102,39 +91,47 @@ export default function MyPage() {
           <Card className="border-none shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-lg font-medium">プラン情報</CardTitle>
-              <Badge className={planLabels[userData.plan].color}>
-                {userData.plan === "premium" && (
-                  <Star className="mr-1 h-3 w-3" />
-                )}
-                {planLabels[userData.plan].name}
+              <Badge
+                className="border-0"
+                style={{ backgroundColor: userData.planColor, color: "#fff" }}
+              >
+                {userData.planName}
               </Badge>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-between rounded-xl bg-cream p-4">
-                <div>
-                  <p className="text-sm text-text-secondary">
-                    今月のイベント参加
-                  </p>
-                  <p className="mt-1 text-2xl font-bold text-text-primary">
-                    {userData.monthlyUsed}
+              <div
+                className="rounded-xl bg-cream p-4"
+                style={{ borderLeft: `4px solid ${userData.planColor}` }}
+              >
+                <p className="mb-2 text-sm font-medium text-text-secondary">
+                  参加可能カテゴリ
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {userData.planCategories.map((cat) => {
+                    const label = categoryLabels[cat];
+                    return label ? (
+                      <span
+                        key={cat}
+                        className={`inline-block rounded-full px-3 py-1 text-sm font-medium ${label.color}`}
+                      >
+                        {label.name}
+                      </span>
+                    ) : null;
+                  })}
+                </div>
+                <div className="mt-4 flex items-baseline justify-between">
+                  <p className="text-sm text-text-secondary">月額</p>
+                  <p className="text-2xl font-bold text-text-primary">
+                    ¥980
                     <span className="text-base font-normal text-text-secondary">
-                      {" "}
-                      / {userData.monthlyLimit}回
+                      /月
                     </span>
                   </p>
                 </div>
-                <div className="text-right">
-                  <p className="text-sm text-text-secondary">残り</p>
-                  <p className="text-2xl font-bold text-brand">
-                    {remainingEvents}回
-                  </p>
-                </div>
-              </div>
-              {remainingEvents <= 1 && (
-                <p className="mt-3 text-sm text-warning">
-                  残り参加回数が少なくなっています。プランのアップグレードをご検討ください。
+                <p className="mt-2 text-sm text-text-secondary">
+                  全てのママ会イベントに参加し放題です
                 </p>
-              )}
+              </div>
             </CardContent>
           </Card>
 

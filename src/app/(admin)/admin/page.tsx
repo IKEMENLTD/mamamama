@@ -15,9 +15,10 @@ import {
 // ダミーデータ（後でバックエンドと連携）
 const stats = {
   totalMembers: 78,
-  trialMembers: 15,
-  standardMembers: 48,
-  premiumMembers: 15,
+  mamaKaiMembers: 20,
+  exerciseMembers: 18,
+  learningMembers: 15,
+  premiumMembers: 25,
   monthlyEvents: 12,
   upcomingReservations: 45,
 };
@@ -133,14 +134,17 @@ export default function AdminDashboard() {
           <CardContent>
             <div className="text-3xl font-bold">{stats.totalMembers}</div>
             <div className="mt-2 flex flex-wrap gap-2 text-xs">
-              <Badge variant="outline" className="border-text-light/30">
-                お試し {stats.trialMembers}
+              <Badge variant="outline" className="border-[#F9A8D4]/50 text-[#F9A8D4]">
+                ママ会部 {stats.mamaKaiMembers}
               </Badge>
-              <Badge variant="outline" className="border-brand/30 text-brand">
-                スタンダード {stats.standardMembers}
+              <Badge variant="outline" className="border-[#86EFAC]/50 text-green-600">
+                運動部 {stats.exerciseMembers}
               </Badge>
-              <Badge variant="outline" className="border-brand-dark/30 text-brand-dark">
-                プレミアム {stats.premiumMembers}
+              <Badge variant="outline" className="border-[#93C5FD]/50 text-blue-600">
+                学び部 {stats.learningMembers}
+              </Badge>
+              <Badge variant="outline" className="border-[#FDE68A]/50 text-yellow-700">
+                プレミアム部 {stats.premiumMembers}
               </Badge>
             </div>
           </CardContent>

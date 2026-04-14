@@ -1,0 +1,353 @@
+// ==============================================
+// mamamama 会員サイト - Prisma Schema
+// ==============================================
+// PostgreSQL + Prisma 7 (PrismaPg adapter)
+// ID: UUID, テーブル名: snake_case (@@map), カラム名: snake_case (@map)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ==============================================
+// Enums
+// ==============================================
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  CANCELLED
+}
+
+enum Category {
+  MAMA_KAI
+  EXERCISE
+  LEARNING
+}
+
+enum EventType {
+  ONLINE
+  OFFLINE
+}
+
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+  CANCELLED
+}
+
+enum ReservationStatus {
+  CONFIRMED
+  CANCELLED
+  WAITLISTED
+}
+
+enum VideoStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum MemberCouponStatus {
+  ACTIVE
+  EXPIRED
+  DRAFT
+}
+
+enum CustomFieldType {
+  TEXT
+  SELECT
+  CHECKBOX
+}
+
+enum DiscountType {
+  AMOUNT
+  RATE
+}
+
+// ==============================================
+// 1. Plan (あんしんパス)
+// ==============================================
+// categories: PostgreSQL配列型。プレミアムは3カテゴリ全て格納。
+// color: UIバッジ・カード枠線に使用するHEXカラー。
+
+model Plan {
+  id          String     @id @default(uuid())
+  slug        String     @unique
+  name        String
+  price       Int
+  categories  Category[]
+  color       String
+  description String?
+  sortOrder   Int        @default(0) @map("sort_order")
+  isActive    Boolean    @default(true) @map("is_active")
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+
+  users              User[]
+  videoPlanAccess    VideoPlanAccess[]
+  couponPlanAccess   MemberCouponPlanAccess[]
+
+  @@map("plans")
+}
+
+// ==============================================
+// 2. User (会員 + 管理者)
+// ==============================================
+
+model User {
+  id                   String     @id @default(uuid())
+  email                String     @unique
+  passwordHash         String     @map("password_hash")
+  displayName          String     @map("display_name")
+  role                 Role       @default(MEMBER)
+  planId               String?    @map("plan_id")
+  status               UserStatus @default(ACTIVE)
+  mustChangePassword   Boolean    @default(true) @map("must_change_password")
+  squareCustomerId     String?    @unique @map("square_customer_id")
+  squareSubscriptionId String?    @unique @map("square_subscription_id")
+  adminPhotoUrl        String?    @map("admin_photo_url")
+  lastLoginAt          DateTime?  @map("last_login_at")
+  createdAt            DateTime   @default(now()) @map("created_at")
+  updatedAt            DateTime   @updatedAt @map("updated_at")
+
+  plan                Plan?                @relation(fields: [planId], references: [id], onDelete: SetNull)
+  reservations        Reservation[]
+  passwordResetTokens PasswordResetToken[]
+
+  @@map("users")
+}
+
+// ==============================================
+// 3. PasswordResetToken
+// ==============================================
+
+model PasswordResetToken {
+  id        String    @id @default(uuid())
+  userId    String    @map("user_id")
+  token     String    @unique
+  expiresAt DateTime  @map("expires_at")
+  usedAt    DateTime? @map("used_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("password_reset_tokens")
+}
+
+// ==============================================
+// 4. Event (イベント)
+// ==============================================
+
+model Event {
+  id                  String      @id @default(uuid())
+  title               String
+  description         String?     @db.Text
+  coverImageUrl       String?     @map("cover_image_url")
+  category            Category
+  eventType           EventType   @map("event_type")
+  startAt             DateTime    @map("start_at")
+  endAt               DateTime    @map("end_at")
+  location            String?
+  zoomUrl             String?     @map("zoom_url")
+  zoomPasscode        String?     @map("zoom_passcode")
+  capacity            Int?
+  priceMember         Int         @default(0) @map("price_member")
+  priceGuest          Int         @default(0) @map("price_guest")
+  allowGuest          Boolean     @default(false) @map("allow_guest")
+  cancelDeadlineHours Int         @default(24) @map("cancel_deadline_hours")
+  status              EventStatus @default(DRAFT)
+  createdAt           DateTime    @default(now()) @map("created_at")
+  updatedAt           DateTime    @updatedAt @map("updated_at")
+
+  customFields EventCustomField[]
+  reservations Reservation[]
+
+  @@index([category])
+  @@index([startAt])
+  @@index([status])
+  @@map("events")
+}
+
+// ==============================================
+// 5. EventCustomField (イベント追加確認項目)
+// ==============================================
+
+model EventCustomField {
+  id         String          @id @default(uuid())
+  eventId    String          @map("event_id")
+  label      String
+  fieldType  CustomFieldType @map("field_type")
+  options    Json?
+  isRequired Boolean         @default(false) @map("is_required")
+  sortOrder  Int             @default(0) @map("sort_order")
+  createdAt  DateTime        @default(now()) @map("created_at")
+  updatedAt  DateTime        @updatedAt @map("updated_at")
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId, sortOrder])
+  @@map("event_custom_fields")
+}
+
+// ==============================================
+// 6. Reservation (予約)
+// ==============================================
+
+model Reservation {
+  id                String            @id @default(uuid())
+  eventId           String            @map("event_id")
+  userId            String?           @map("user_id")
+  isGuest           Boolean           @default(false) @map("is_guest")
+  guestName         String?           @map("guest_name")
+  guestEmail        String?           @map("guest_email")
+  guestPhone        String?           @map("guest_phone")
+  guestChildAge     String?           @map("guest_child_age")
+  customFieldValues Json?             @map("custom_field_values")
+  status            ReservationStatus @default(CONFIRMED)
+  squarePaymentId   String?           @map("square_payment_id")
+  guestCouponId     String?           @map("guest_coupon_id")
+  discountAmount    Int               @default(0) @map("discount_amount")
+  createdAt         DateTime          @default(now()) @map("created_at")
+  updatedAt         DateTime          @updatedAt @map("updated_at")
+
+  event       Event        @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user        User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  guestCoupon GuestCoupon? @relation(fields: [guestCouponId], references: [id], onDelete: SetNull)
+
+  @@unique([eventId, userId])
+  @@index([eventId])
+  @@index([userId])
+  @@index([status])
+  @@map("reservations")
+}
+
+// ==============================================
+// 7. Video (限定動画)
+// ==============================================
+
+model Video {
+  id           String      @id @default(uuid())
+  title        String
+  description  String?     @db.Text
+  youtubeUrl   String      @map("youtube_url")
+  thumbnailUrl String?     @map("thumbnail_url")
+  category     String?
+  status       VideoStatus @default(DRAFT)
+  sortOrder    Int         @default(0) @map("sort_order")
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @updatedAt @map("updated_at")
+
+  planAccess VideoPlanAccess[]
+
+  @@index([status])
+  @@map("videos")
+}
+
+// ==============================================
+// 8. VideoPlanAccess (Video <-> Plan 中間テーブル)
+// ==============================================
+
+model VideoPlanAccess {
+  id        String   @id @default(uuid())
+  videoId   String   @map("video_id")
+  planId    String   @map("plan_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  plan  Plan  @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@unique([videoId, planId])
+  @@map("video_plan_access")
+}
+
+// ==============================================
+// 9. MemberCoupon (会員向けクーポン)
+// ==============================================
+
+model MemberCoupon {
+  id          String             @id @default(uuid())
+  title       String
+  description String?            @db.Text
+  imageUrl    String?            @map("image_url")
+  sponsorId   String?            @map("sponsor_id")
+  expiresAt   DateTime?          @map("expires_at")
+  status      MemberCouponStatus @default(DRAFT)
+  createdAt   DateTime           @default(now()) @map("created_at")
+  updatedAt   DateTime           @updatedAt @map("updated_at")
+
+  sponsor    Sponsor?                 @relation(fields: [sponsorId], references: [id], onDelete: SetNull)
+  planAccess MemberCouponPlanAccess[]
+
+  @@index([status])
+  @@map("member_coupons")
+}
+
+// ==============================================
+// 10. MemberCouponPlanAccess (MemberCoupon <-> Plan)
+// ==============================================
+
+model MemberCouponPlanAccess {
+  id             String   @id @default(uuid())
+  memberCouponId String   @map("member_coupon_id")
+  planId         String   @map("plan_id")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  memberCoupon MemberCoupon @relation(fields: [memberCouponId], references: [id], onDelete: Cascade)
+  plan         Plan         @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@unique([memberCouponId, planId])
+  @@map("member_coupon_plan_access")
+}
+
+// ==============================================
+// 11. GuestCoupon (ゲスト向け割引クーポン)
+// ==============================================
+
+model GuestCoupon {
+  id            String       @id @default(uuid())
+  code          String       @unique
+  title         String
+  discountType  DiscountType @map("discount_type")
+  discountValue Int          @map("discount_value")
+  expiresAt     DateTime?    @map("expires_at")
+  usageLimit    Int?         @map("usage_limit")
+  usageCount    Int          @default(0) @map("usage_count")
+  isActive      Boolean      @default(true) @map("is_active")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+
+  reservations Reservation[]
+
+  @@map("guest_coupons")
+}
+
+// ==============================================
+// 12. Sponsor (協賛企業)
+// ==============================================
+
+model Sponsor {
+  id            String   @id @default(uuid())
+  name          String
+  logoUrl       String?  @map("logo_url")
+  description   String?  @db.Text
+  websiteUrl    String?  @map("website_url")
+  contactPerson String?  @map("contact_person")
+  email         String?
+  phone         String?
+  sortOrder     Int      @default(0) @map("sort_order")
+  isActive      Boolean  @default(true) @map("is_active")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  memberCoupons MemberCoupon[]
+
+  @@map("sponsors")
+}

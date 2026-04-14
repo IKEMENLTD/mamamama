@@ -39,9 +39,8 @@ const members = [
     id: "1",
     displayName: "田中 さくら",
     email: "tanaka.sakura@example.com",
-    plan: "standard" as const,
+    plan: "mama-kai",
     status: "active" as const,
-    monthlyUsed: 2,
     createdAt: "2025/12/01",
     photoUrl: null,
   },
@@ -49,9 +48,8 @@ const members = [
     id: "2",
     displayName: "鈴木 あおい",
     email: "suzuki.aoi@example.com",
-    plan: "premium" as const,
+    plan: "premium",
     status: "active" as const,
-    monthlyUsed: 5,
     createdAt: "2025/11/15",
     photoUrl: null,
   },
@@ -59,9 +57,8 @@ const members = [
     id: "3",
     displayName: "佐藤 ひなた",
     email: "sato.hinata@example.com",
-    plan: "trial" as const,
+    plan: "exercise",
     status: "active" as const,
-    monthlyUsed: 1,
     createdAt: "2026/01/20",
     photoUrl: null,
   },
@@ -69,9 +66,8 @@ const members = [
     id: "4",
     displayName: "高橋 りん",
     email: "takahashi.rin@example.com",
-    plan: "standard" as const,
+    plan: "learning",
     status: "suspended" as const,
-    monthlyUsed: 0,
     createdAt: "2025/10/05",
     photoUrl: null,
   },
@@ -79,18 +75,18 @@ const members = [
     id: "5",
     displayName: "伊藤 みお",
     email: "ito.mio@example.com",
-    plan: "premium" as const,
+    plan: "premium",
     status: "active" as const,
-    monthlyUsed: 8,
     createdAt: "2025/09/01",
     photoUrl: null,
   },
 ];
 
-const planLabels = {
-  trial: { name: "お試し", color: "bg-text-light text-white" },
-  standard: { name: "スタンダード", color: "bg-brand text-white" },
-  premium: { name: "プレミアム", color: "bg-brand-dark text-white" },
+const planLabels: Record<string, { name: string; color: string }> = {
+  "mama-kai": { name: "ママ会部", color: "bg-[#F9A8D4] text-white" },
+  exercise: { name: "運動部", color: "bg-[#86EFAC] text-white" },
+  learning: { name: "学び部", color: "bg-[#93C5FD] text-white" },
+  premium: { name: "プレミアム部", color: "bg-[#FDE68A] text-gray-800" },
 };
 
 const statusLabels = {
@@ -99,10 +95,11 @@ const statusLabels = {
   cancelled: { name: "退会", color: "bg-destructive/10 text-destructive" },
 };
 
-const planLimits = {
-  trial: 2,
-  standard: 5,
-  premium: 999,
+const planCategories: Record<string, string[]> = {
+  "mama-kai": ["ママ会"],
+  exercise: ["運動"],
+  learning: ["学び"],
+  premium: ["ママ会", "運動", "学び"],
 };
 
 export default function MembersPage() {
@@ -144,8 +141,8 @@ export default function MembersPage() {
       <Card className="border-none shadow-sm">
         <CardContent className="pt-6">
           <div className="flex flex-col gap-4 sm:flex-row">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-light" />
+            <div className="relative flex flex-1 items-center">
+              <Search className="absolute left-3 h-4 w-4 text-text-light pointer-events-none" />
               <Input
                 placeholder="名前またはメールアドレスで検索..."
                 value={searchQuery}
@@ -170,7 +167,7 @@ export default function MembersPage() {
                 <TableHead className="pl-6">会員</TableHead>
                 <TableHead>プラン</TableHead>
                 <TableHead>ステータス</TableHead>
-                <TableHead>今月の参加</TableHead>
+                <TableHead>カテゴリ</TableHead>
                 <TableHead>登録日</TableHead>
                 <TableHead className="w-12"></TableHead>
               </TableRow>
@@ -212,10 +209,17 @@ export default function MembersPage() {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <span className="font-medium">{member.monthlyUsed}</span>
-                    <span className="text-text-light">
-                      /{planLimits[member.plan] === 999 ? "∞" : planLimits[member.plan]}回
-                    </span>
+                    <div className="flex flex-wrap gap-1">
+                      {planCategories[member.plan]?.map((cat) => (
+                        <Badge key={cat} variant="secondary" className={
+                          cat === "ママ会" ? "bg-[#F9A8D4]/20 text-[#F9A8D4]" :
+                          cat === "運動" ? "bg-[#86EFAC]/20 text-green-700" :
+                          "bg-[#93C5FD]/20 text-blue-700"
+                        }>
+                          {cat}
+                        </Badge>
+                      ))}
+                    </div>
                   </TableCell>
                   <TableCell className="text-text-secondary">
                     {member.createdAt}

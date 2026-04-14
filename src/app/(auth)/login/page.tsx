@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,7 +21,6 @@ export default function LoginPage() {
     setIsLoading(true);
     setError("");
 
-    // ダミーのログイン処理（後でバックエンドと連携）
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
@@ -32,11 +32,23 @@ export default function LoginPage() {
       return;
     }
 
-    // ダミー認証（開発用）
-    setTimeout(() => {
-      // 成功時はマイページへリダイレクト
-      router.push("/mypage");
-    }, 1000);
+    try {
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setError("メールアドレスまたはパスワードが正しくありません");
+      } else if (result?.ok) {
+        router.push("/mypage");
+      }
+    } catch {
+      setError("ログイン中にエラーが発生しました");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

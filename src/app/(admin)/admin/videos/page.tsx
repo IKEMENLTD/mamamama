@@ -42,7 +42,7 @@ const videos = [
     youtubeUrl: "https://www.youtube.com/watch?v=xxxxx",
     thumbnailUrl: null,
     category: "育児",
-    allowedPlans: ["standard", "premium"],
+    allowedPlans: ["mama-kai", "premium"],
     status: "published" as const,
     createdAt: "2026/01/15",
   },
@@ -53,7 +53,7 @@ const videos = [
     youtubeUrl: "https://www.youtube.com/watch?v=yyyyy",
     thumbnailUrl: null,
     category: "食事",
-    allowedPlans: ["standard", "premium"],
+    allowedPlans: ["learning", "premium"],
     status: "published" as const,
     createdAt: "2026/01/20",
   },
@@ -64,7 +64,7 @@ const videos = [
     youtubeUrl: "https://www.youtube.com/watch?v=zzzzz",
     thumbnailUrl: null,
     category: "健康",
-    allowedPlans: ["premium"],
+    allowedPlans: ["exercise", "premium"],
     status: "published" as const,
     createdAt: "2026/02/01",
   },
@@ -75,7 +75,7 @@ const videos = [
     youtubeUrl: "",
     thumbnailUrl: null,
     category: "育児",
-    allowedPlans: ["standard", "premium"],
+    allowedPlans: ["mama-kai", "premium"],
     status: "draft" as const,
     createdAt: "2026/02/10",
   },
@@ -87,9 +87,10 @@ const statusLabels = {
 };
 
 const planLabels: Record<string, string> = {
-  trial: "お試し",
-  standard: "スタンダード",
-  premium: "プレミアム",
+  "mama-kai": "ママ会部",
+  exercise: "運動部",
+  learning: "学び部",
+  premium: "プレミアム部",
 };
 
 export default function VideosPage() {
@@ -100,7 +101,7 @@ export default function VideosPage() {
     description: "",
     youtubeUrl: "",
     category: "",
-    allowedPlans: ["standard", "premium"],
+    allowedPlans: ["mama-kai", "exercise", "learning", "premium"],
   });
 
   const filteredVideos = videos.filter((video) =>
@@ -233,8 +234,8 @@ export default function VideosPage() {
       {/* 検索 */}
       <Card className="border-none shadow-sm">
         <CardContent className="pt-6">
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-light" />
+          <div className="relative flex max-w-md items-center">
+            <Search className="absolute left-3 h-4 w-4 text-text-light pointer-events-none" />
             <Input
               placeholder="動画タイトルで検索..."
               value={searchQuery}

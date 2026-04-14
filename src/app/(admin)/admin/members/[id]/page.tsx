@@ -29,7 +29,7 @@ const memberData = {
   id: "1",
   displayName: "田中 さくら",
   email: "tanaka.sakura@example.com",
-  plan: "standard" as const,
+  plan: "mama-kai" as const,
   status: "active" as const,
   monthlyUsed: 2,
   createdAt: "2025/12/01",
@@ -60,9 +60,10 @@ const reservationHistory = [
 ];
 
 const planOptions = [
-  { value: "trial", label: "お試しプラン", price: "¥980/月" },
-  { value: "standard", label: "スタンダードプラン", price: "¥2,980/月" },
-  { value: "premium", label: "プレミアムプラン", price: "¥4,980/月" },
+  { value: "mama-kai", label: "ママ会部", price: "¥980/月" },
+  { value: "exercise", label: "運動部", price: "¥2,480/月" },
+  { value: "learning", label: "学び部", price: "¥2,480/月" },
+  { value: "premium", label: "プレミアム部", price: "¥3,980/月" },
 ];
 
 const statusOptions = [
@@ -71,10 +72,11 @@ const statusOptions = [
   { value: "cancelled", label: "退会" },
 ];
 
-const planLabels = {
-  trial: { name: "お試し", color: "bg-text-light text-white" },
-  standard: { name: "スタンダード", color: "bg-brand text-white" },
-  premium: { name: "プレミアム", color: "bg-brand-dark text-white" },
+const planLabels: Record<string, { name: string; color: string }> = {
+  "mama-kai": { name: "ママ会部", color: "bg-[#F9A8D4] text-white" },
+  exercise: { name: "運動部", color: "bg-[#86EFAC] text-white" },
+  learning: { name: "学び部", color: "bg-[#93C5FD] text-white" },
+  premium: { name: "プレミアム部", color: "bg-[#FDE68A] text-gray-800" },
 };
 
 const statusLabels = {
@@ -257,7 +259,7 @@ export default function MemberDetailPage() {
                 <CardHeader>
                   <CardTitle className="text-lg">予約履歴</CardTitle>
                   <CardDescription>
-                    今月の参加: {memberData.monthlyUsed}回
+                    参加可能: ママ会イベント
                   </CardDescription>
                 </CardHeader>
                 <CardContent>

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useSession, signOut } from "next-auth/react";
 import { Menu, X, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,6 +27,7 @@ interface HeaderProps {
 
 const publicNavItems = [
   { href: "/", label: "ホーム" },
+  { href: "/events", label: "イベント" },
   { href: "/sponsors", label: "協賛企業" },
 ];
 
@@ -38,8 +40,12 @@ const memberNavItems = [
 
 export function Header({ isLoggedIn = false, userName = "" }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const { data: session } = useSession();
 
-  const navItems = isLoggedIn
+  const isAuthenticated = isLoggedIn || !!session?.user;
+  const name = userName || session?.user?.name || "";
+
+  const navItems = isAuthenticated
     ? [...publicNavItems.slice(0, 1), ...memberNavItems, publicNavItems[1]]
     : publicNavItems;
 
@@ -68,7 +74,7 @@ export function Header({ isLoggedIn = false, userName = "" }: HeaderProps) {
 
         {/* デスクトップ右側 */}
         <div className="hidden md:flex md:items-center md:gap-4">
-          {isLoggedIn ? (
+          {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -77,7 +83,7 @@ export function Header({ isLoggedIn = false, userName = "" }: HeaderProps) {
                 >
                   <Avatar className="h-10 w-10 border-2 border-brand/30">
                     <AvatarFallback className="bg-brand/10 text-brand">
-                      {userName.charAt(0) || "U"}
+                      {name.charAt(0) || "U"}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
@@ -85,7 +91,7 @@ export function Header({ isLoggedIn = false, userName = "" }: HeaderProps) {
               <DropdownMenuContent className="w-56" align="end">
                 <div className="flex items-center gap-2 p-2">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium">{userName}</p>
+                    <p className="text-sm font-medium">{name}</p>
                     <p className="text-xs text-muted-foreground">会員</p>
                   </div>
                 </div>
@@ -103,7 +109,10 @@ export function Header({ isLoggedIn = false, userName = "" }: HeaderProps) {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="cursor-pointer text-destructive">
+                <DropdownMenuItem
+                  className="cursor-pointer text-destructive"
+                  onClick={() => signOut({ callbackUrl: "/" })}
+                >
                   <LogOut className="mr-2 h-4 w-4" />
                   ログアウト
                 </DropdownMenuItem>
@@ -127,15 +136,15 @@ export function Header({ isLoggedIn = false, userName = "" }: HeaderProps) {
           <SheetContent side="right" className="w-[300px] sm:w-[350px]">
             <SheetTitle className="sr-only">メニュー</SheetTitle>
             <div className="flex flex-col gap-6 pt-6">
-              {isLoggedIn && (
+              {isAuthenticated && (
                 <div className="flex items-center gap-3 rounded-xl bg-cream p-4">
                   <Avatar className="h-12 w-12 border-2 border-brand/30">
                     <AvatarFallback className="bg-brand/10 text-brand">
-                      {userName.charAt(0) || "U"}
+                      {name.charAt(0) || "U"}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-medium">{userName}</p>
+                    <p className="font-medium">{name}</p>
                     <p className="text-sm text-muted-foreground">会員</p>
                   </div>
                 </div>
@@ -153,11 +162,14 @@ export function Header({ isLoggedIn = false, userName = "" }: HeaderProps) {
                 ))}
               </nav>
               <div className="border-t pt-4">
-                {isLoggedIn ? (
+                {isAuthenticated ? (
                   <Button
                     variant="outline"
                     className="w-full justify-start rounded-xl text-destructive"
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => {
+                      setIsOpen(false);
+                      signOut({ callbackUrl: "/" });
+                    }}
                   >
                     <LogOut className="mr-2 h-4 w-4" />
                     ログアウト

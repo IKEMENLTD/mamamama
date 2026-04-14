@@ -39,33 +39,43 @@ const features = [
 
 const plans = [
   {
-    name: "お試しプラン",
+    name: "あんしんパスママ会部",
     price: "980",
-    features: ["月2回までイベント参加", "コミュニティ参加"],
+    color: "#F9A8D4",
+    features: ["ママ会イベントに参加し放題", "コミュニティ参加"],
     highlight: false,
   },
   {
-    name: "スタンダードプラン",
-    price: "2,980",
+    name: "あんしんパス運動部",
+    price: "2,480",
+    color: "#86EFAC",
     features: [
-      "月5回までイベント参加",
+      "運動系レッスンに参加し放題",
+      "コミュニティ参加",
+    ],
+    highlight: false,
+  },
+  {
+    name: "あんしんパス学び部",
+    price: "2,480",
+    color: "#93C5FD",
+    features: [
+      "学び系レッスンに参加し放題",
+      "コミュニティ参加",
+    ],
+    highlight: false,
+  },
+  {
+    name: "あんしんパスプレミアム部",
+    price: "3,980",
+    color: "#FDE68A",
+    features: [
+      "全イベント参加し放題",
       "限定動画の視聴",
       "クーポン利用",
       "コミュニティ参加",
     ],
     highlight: true,
-  },
-  {
-    name: "プレミアムプラン",
-    price: "4,980",
-    features: [
-      "イベント参加し放題",
-      "24時間先行予約",
-      "限定動画の視聴",
-      "クーポン利用",
-      "コミュニティ参加",
-    ],
-    highlight: false,
   },
 ];
 
@@ -196,35 +206,34 @@ export default function HomePage() {
             </div>
             <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {upcomingEvents.map((event) => (
-                <Card
-                  key={event.id}
-                  className="overflow-hidden border-none bg-white shadow-sm transition-shadow hover:shadow-md"
-                >
-                  <div className="aspect-video bg-gradient-to-br from-brand-light to-cream" />
-                  <CardContent className="p-5">
-                    <div className="mb-2 flex items-center gap-2">
-                      <Badge
-                        variant="secondary"
-                        className="bg-brand/10 text-brand"
-                      >
-                        残り{event.spots}席
-                      </Badge>
-                    </div>
-                    <h3 className="font-heading text-lg font-semibold">
-                      {event.title}
-                    </h3>
-                    <div className="mt-3 space-y-1 text-sm text-text-secondary">
-                      <p className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4" />
-                        {event.date}
-                      </p>
-                      <p className="flex items-center gap-2">
-                        <Users className="h-4 w-4" />
-                        {event.location}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
+                <Link key={event.id} href={`/events/${event.id}`}>
+                  <Card className="h-full overflow-hidden border-none bg-white shadow-sm transition-all hover:shadow-lg hover:-translate-y-1">
+                    <div className="aspect-video bg-gradient-to-br from-brand-light to-cream" />
+                    <CardContent className="p-5">
+                      <div className="mb-2 flex items-center gap-2">
+                        <Badge
+                          variant="secondary"
+                          className="bg-brand/10 text-brand"
+                        >
+                          残り{event.spots}席
+                        </Badge>
+                      </div>
+                      <h3 className="font-heading text-lg font-semibold">
+                        {event.title}
+                      </h3>
+                      <div className="mt-3 space-y-1 text-sm text-text-secondary">
+                        <p className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4" />
+                          {event.date}
+                        </p>
+                        <p className="flex items-center gap-2">
+                          <Users className="h-4 w-4" />
+                          {event.location}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
               ))}
             </div>
             <div className="mt-6 text-center md:hidden">
@@ -246,10 +255,10 @@ export default function HomePage() {
                 料金プラン
               </h2>
               <p className="mt-4 text-text-secondary">
-                あなたのライフスタイルに合わせて選べる3つのプラン
+                あなたのライフスタイルに合わせて選べる4つのプラン
               </p>
             </div>
-            <div className="mt-12 grid gap-6 md:grid-cols-3">
+            <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
               {plans.map((plan) => (
                 <Card
                   key={plan.name}
@@ -258,6 +267,7 @@ export default function HomePage() {
                       ? "border-brand shadow-lg"
                       : "border-transparent shadow-sm"
                   }`}
+                  style={{ borderTopColor: plan.color, borderTopWidth: "4px" }}
                 >
                   {plan.highlight && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2">

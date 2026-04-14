@@ -18,24 +18,10 @@ import {
 } from "lucide-react";
 
 const planOptions = [
-  {
-    value: "trial",
-    label: "お試しプラン",
-    price: "¥980/月",
-    description: "月2回までイベント参加",
-  },
-  {
-    value: "standard",
-    label: "スタンダードプラン",
-    price: "¥2,980/月",
-    description: "月5回までイベント参加、動画・クーポン利用可",
-  },
-  {
-    value: "premium",
-    label: "プレミアムプラン",
-    price: "¥4,980/月",
-    description: "イベント参加し放題、24時間先行予約",
-  },
+  { value: "mama-kai", label: "あんしんパスママ会部", price: "¥980/月", description: "ママ会イベントに参加し放題", color: "#F9A8D4" },
+  { value: "exercise", label: "あんしんパス運動部", price: "¥2,480/月", description: "運動系レッスンに参加し放題", color: "#86EFAC" },
+  { value: "learning", label: "あんしんパス学び部", price: "¥2,480/月", description: "学び系レッスンに参加し放題", color: "#93C5FD" },
+  { value: "premium", label: "あんしんパスプレミアム部", price: "¥3,980/月", description: "全イベント参加し放題", color: "#FDE68A" },
 ];
 
 type Step = "input" | "confirm" | "complete";
@@ -48,7 +34,7 @@ export default function NewMemberPage() {
   const [formData, setFormData] = useState({
     displayName: "",
     email: "",
-    plan: "standard",
+    plan: "mama-kai",
   });
   const [generatedPassword, setGeneratedPassword] = useState("");
   const [copied, setCopied] = useState(false);
@@ -410,7 +396,7 @@ export default function NewMemberPage() {
                 className="flex-1 rounded-xl"
                 onClick={() => {
                   setStep("input");
-                  setFormData({ displayName: "", email: "", plan: "standard" });
+                  setFormData({ displayName: "", email: "", plan: "mama-kai" });
                   setGeneratedPassword("");
                 }}
               >

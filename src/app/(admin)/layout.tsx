@@ -5,13 +5,16 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Users,
+  CreditCard,
   Calendar,
   Video,
   Gift,
+  Ticket,
   Building2,
   LogOut,
   Menu,
   X,
+  ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
@@ -30,6 +33,11 @@ const sidebarItems = [
     label: "会員管理",
   },
   {
+    href: "/admin/plans",
+    icon: CreditCard,
+    label: "プラン管理",
+  },
+  {
     href: "/admin/events",
     icon: Calendar,
     label: "イベント管理",
@@ -43,6 +51,11 @@ const sidebarItems = [
     href: "/admin/coupons",
     icon: Gift,
     label: "クーポン管理",
+  },
+  {
+    href: "/admin/guest-coupons",
+    icon: Ticket,
+    label: "ゲストクーポン",
   },
   {
     href: "/admin/sponsors",
@@ -90,7 +103,15 @@ function SidebarContent({ pathname }: { pathname: string }) {
       </nav>
 
       {/* フッター */}
-      <div className="border-t border-sidebar-border p-4">
+      <div className="border-t border-sidebar-border p-4 space-y-2">
+        <Link
+          href="/"
+          target="_blank"
+          className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-text-secondary transition-colors hover:bg-cream hover:text-text-primary"
+        >
+          <ExternalLink className="h-5 w-5" />
+          サイトを見る
+        </Link>
         <Button
           variant="ghost"
           className="w-full justify-start gap-3 text-text-secondary hover:text-destructive"

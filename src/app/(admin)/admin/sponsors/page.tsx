@@ -264,8 +264,8 @@ export default function SponsorsPage() {
       {/* 検索 */}
       <Card className="border-none shadow-sm">
         <CardContent className="pt-6">
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-light" />
+          <div className="relative flex max-w-md items-center">
+            <Search className="absolute left-3 h-4 w-4 text-text-light pointer-events-none" />
             <Input
               placeholder="企業名またはカテゴリで検索..."
               value={searchQuery}

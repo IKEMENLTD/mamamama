@@ -48,7 +48,7 @@ const coupons = [
     description: "協賛店舗「ベビーランド」にてベビー用品が10%OFF。レジにて画面を提示してください。",
     sponsor: "ベビーランド渋谷店",
     imageUrl: null,
-    allowedPlans: ["standard", "premium"],
+    allowedPlans: ["exercise", "learning", "premium"],
     expiresAt: "2026/03/31",
     status: "active" as const,
     createdAt: "2026/01/01",
@@ -59,7 +59,7 @@ const coupons = [
     description: "協賛カフェ「ママカフェ」にてドリンク1杯無料。お子様連れの方限定。",
     sponsor: "ママカフェ代官山",
     imageUrl: null,
-    allowedPlans: ["standard", "premium"],
+    allowedPlans: ["mama-kai", "exercise", "learning", "premium"],
     expiresAt: "2026/04/30",
     status: "active" as const,
     createdAt: "2026/01/15",
@@ -81,7 +81,7 @@ const coupons = [
     description: "新商品のおむつサンプルをプレゼント。数量限定。",
     sponsor: "ベビーケア株式会社",
     imageUrl: null,
-    allowedPlans: ["standard", "premium"],
+    allowedPlans: ["mama-kai", "exercise", "learning", "premium"],
     expiresAt: "2026/02/28",
     status: "expired" as const,
     createdAt: "2026/01/10",
@@ -95,9 +95,10 @@ const statusLabels = {
 };
 
 const planLabels: Record<string, string> = {
-  trial: "お試し",
-  standard: "スタンダード",
-  premium: "プレミアム",
+  "mama-kai": "ママ会部",
+  exercise: "運動部",
+  learning: "学び部",
+  premium: "プレミアム部",
 };
 
 export default function CouponsPage() {
@@ -108,7 +109,7 @@ export default function CouponsPage() {
     description: "",
     sponsor: "",
     expiresAt: "",
-    allowedPlans: ["standard", "premium"],
+    allowedPlans: ["mama-kai", "exercise", "learning", "premium"],
   });
 
   const filteredCoupons = coupons.filter(
@@ -139,10 +140,10 @@ export default function CouponsPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-heading text-2xl font-bold text-text-primary md:text-3xl">
-            クーポン管理
+            会員クーポン管理
           </h1>
           <p className="mt-1 text-text-secondary">
-            会員向けクーポンの管理ができます
+            あんしんパス会員向けの特典クーポンを管理します
           </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -261,8 +262,8 @@ export default function CouponsPage() {
       {/* 検索 */}
       <Card className="border-none shadow-sm">
         <CardContent className="pt-6">
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-light" />
+          <div className="relative flex max-w-md items-center">
+            <Search className="absolute left-3 h-4 w-4 text-text-light pointer-events-none" />
             <Input
               placeholder="クーポン名または協賛企業で検索..."
               value={searchQuery}

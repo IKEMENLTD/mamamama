@@ -3,25 +3,16 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
 import {
   ArrowLeft,
   Loader2,
-  Plus,
-  X,
   ImagePlus,
 } from "lucide-react";
-
-const planOptions = [
-  { value: "trial", label: "お試しプラン" },
-  { value: "standard", label: "スタンダードプラン" },
-  { value: "premium", label: "プレミアムプラン" },
-];
 
 export default function NewEventPage() {
   const router = useRouter();
@@ -36,20 +27,14 @@ export default function NewEventPage() {
     capacity: "",
     priceMember: "",
     priceGuest: "",
+    category: "MAMA_KAI",
+    eventType: "offline",
+    zoomUrl: "",
+    zoomPasscode: "",
     allowGuest: true,
-    allowedPlans: ["trial", "standard", "premium"],
     cancelDeadlineHours: "24",
     status: "draft",
   });
-
-  const handlePlanToggle = (plan: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      allowedPlans: prev.allowedPlans.includes(plan)
-        ? prev.allowedPlans.filter((p) => p !== plan)
-        : [...prev.allowedPlans, plan],
-    }));
-  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -179,7 +164,41 @@ export default function NewEventPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="location">場所 *</Label>
+              <Label>開催形式 *</Label>
+              <div className="flex gap-4">
+                <label className="flex cursor-pointer items-center gap-2">
+                  <input
+                    type="radio"
+                    name="eventType"
+                    value="offline"
+                    checked={formData.eventType === "offline"}
+                    onChange={(e) =>
+                      setFormData({ ...formData, eventType: e.target.value })
+                    }
+                    className="h-4 w-4"
+                  />
+                  <span>オフライン</span>
+                </label>
+                <label className="flex cursor-pointer items-center gap-2">
+                  <input
+                    type="radio"
+                    name="eventType"
+                    value="online"
+                    checked={formData.eventType === "online"}
+                    onChange={(e) =>
+                      setFormData({ ...formData, eventType: e.target.value })
+                    }
+                    className="h-4 w-4"
+                  />
+                  <span>オンライン</span>
+                </label>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="location">
+                場所 {formData.eventType === "offline" ? "*" : ""}
+              </Label>
               <Input
                 id="location"
                 value={formData.location}
@@ -188,9 +207,44 @@ export default function NewEventPage() {
                 }
                 placeholder="例：渋谷コミュニティセンター 3F会議室"
                 className="rounded-xl"
-                required
+                required={formData.eventType === "offline"}
               />
+              {formData.eventType === "online" && (
+                <p className="text-xs text-text-secondary">
+                  オフラインイベントの場合は必須
+                </p>
+              )}
             </div>
+
+            {formData.eventType === "online" && (
+              <div className="space-y-4 rounded-xl bg-blue-50 p-4">
+                <p className="text-sm font-medium text-info">オンラインイベント設定</p>
+                <div className="space-y-2">
+                  <Label htmlFor="zoomUrl">Zoom URL</Label>
+                  <Input
+                    id="zoomUrl"
+                    value={formData.zoomUrl}
+                    onChange={(e) =>
+                      setFormData({ ...formData, zoomUrl: e.target.value })
+                    }
+                    placeholder="https://zoom.us/j/..."
+                    className="rounded-xl"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="zoomPasscode">Zoom パスコード</Label>
+                  <Input
+                    id="zoomPasscode"
+                    value={formData.zoomPasscode}
+                    onChange={(e) =>
+                      setFormData({ ...formData, zoomPasscode: e.target.value })
+                    }
+                    placeholder="パスコードを入力"
+                    className="rounded-xl"
+                  />
+                </div>
+              </div>
+            )}
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
@@ -271,28 +325,21 @@ export default function NewEventPage() {
 
             <Separator />
 
-            <div className="space-y-3">
-              <Label>参加可能プラン</Label>
-              <div className="flex flex-wrap gap-2">
-                {planOptions.map((plan) => (
-                  <Badge
-                    key={plan.value}
-                    variant={
-                      formData.allowedPlans.includes(plan.value)
-                        ? "default"
-                        : "outline"
-                    }
-                    className={`cursor-pointer ${
-                      formData.allowedPlans.includes(plan.value)
-                        ? "bg-brand hover:bg-brand-dark"
-                        : "hover:bg-brand/10"
-                    }`}
-                    onClick={() => handlePlanToggle(plan.value)}
-                  >
-                    {plan.label}
-                  </Badge>
-                ))}
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="category">イベントカテゴリ *</Label>
+              <select
+                id="category"
+                value={formData.category}
+                onChange={(e) =>
+                  setFormData({ ...formData, category: e.target.value })
+                }
+                className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                required
+              >
+                <option value="MAMA_KAI">ママ会</option>
+                <option value="EXERCISE">運動</option>
+                <option value="LEARNING">学び</option>
+              </select>
             </div>
 
             <div className="flex items-center gap-3">

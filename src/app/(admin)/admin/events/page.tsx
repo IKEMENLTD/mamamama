@@ -47,6 +47,8 @@ const events = [
     priceGuest: 1500,
     status: "published" as const,
     allowGuest: true,
+    category: "EXERCISE" as const,
+    eventType: "offline" as const,
   },
   {
     id: "2",
@@ -60,6 +62,8 @@ const events = [
     priceGuest: 2000,
     status: "published" as const,
     allowGuest: true,
+    category: "MAMA_KAI" as const,
+    eventType: "offline" as const,
   },
   {
     id: "3",
@@ -73,6 +77,8 @@ const events = [
     priceGuest: 1800,
     status: "published" as const,
     allowGuest: false,
+    category: "LEARNING" as const,
+    eventType: "online" as const,
   },
   {
     id: "4",
@@ -86,8 +92,16 @@ const events = [
     priceGuest: 2500,
     status: "draft" as const,
     allowGuest: true,
+    category: "EXERCISE" as const,
+    eventType: "offline" as const,
   },
 ];
+
+const categoryLabels: Record<string, { name: string; color: string }> = {
+  MAMA_KAI: { name: "ママ会", color: "bg-pink-100 text-pink-700" },
+  EXERCISE: { name: "運動", color: "bg-green-100 text-green-700" },
+  LEARNING: { name: "学び", color: "bg-blue-100 text-blue-700" },
+};
 
 const statusLabels = {
   published: { name: "公開中", color: "bg-success/10 text-success" },
@@ -125,8 +139,8 @@ export default function EventsPage() {
       {/* 検索 */}
       <Card className="border-none shadow-sm">
         <CardContent className="pt-6">
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-light" />
+          <div className="relative flex max-w-md items-center">
+            <Search className="absolute left-3 h-4 w-4 text-text-light pointer-events-none" />
             <Input
               placeholder="イベント名で検索..."
               value={searchQuery}
@@ -144,6 +158,7 @@ export default function EventsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead className="pl-6">イベント</TableHead>
+                <TableHead>カテゴリ</TableHead>
                 <TableHead>日時</TableHead>
                 <TableHead>予約状況</TableHead>
                 <TableHead>料金</TableHead>
@@ -165,8 +180,24 @@ export default function EventsPage() {
                         </p>
                         <p className="text-sm text-text-secondary">
                           {event.location}
+                          {event.eventType === "online" && (
+                            <Badge
+                              variant="secondary"
+                              className="ml-2 bg-info/10 text-info"
+                            >
+                              オンライン
+                            </Badge>
+                          )}
                         </p>
                       </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant="secondary"
+                        className={categoryLabels[event.category].color}
+                      >
+                        {categoryLabels[event.category].name}
+                      </Badge>
                     </TableCell>
                     <TableCell>
                       <div className="text-sm">
