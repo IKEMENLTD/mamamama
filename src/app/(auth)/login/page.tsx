@@ -42,7 +42,14 @@ export default function LoginPage() {
       if (result?.error) {
         setError("メールアドレスまたはパスワードが正しくありません");
       } else if (result?.ok) {
-        router.push("/mypage");
+        // セッションを取得してロールに応じたリダイレクト
+        const sessionRes = await fetch("/api/auth/session");
+        const session = await sessionRes.json();
+        if (session?.user?.role === "ADMIN") {
+          router.push("/admin");
+        } else {
+          router.push("/mypage");
+        }
       }
     } catch {
       setError("ログイン中にエラーが発生しました");

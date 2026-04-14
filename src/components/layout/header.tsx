@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useSession, signOut } from "next-auth/react";
-import { Menu, X, User, LogOut } from "lucide-react";
+import { Menu, X, User, LogOut, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -44,9 +44,15 @@ export function Header({ isLoggedIn = false, userName = "" }: HeaderProps) {
 
   const isAuthenticated = isLoggedIn || !!session?.user;
   const name = userName || session?.user?.name || "";
+  const isAdmin = (session?.user as any)?.role === "ADMIN";
 
   const navItems = isAuthenticated
-    ? [...publicNavItems.slice(0, 1), ...memberNavItems, publicNavItems[1]]
+    ? [
+        ...publicNavItems.slice(0, 1),
+        ...memberNavItems,
+        publicNavItems[1],
+        ...(isAdmin ? [{ href: "/admin", label: "管理画面" }] : []),
+      ]
     : publicNavItems;
 
   return (
@@ -92,10 +98,20 @@ export function Header({ isLoggedIn = false, userName = "" }: HeaderProps) {
                 <div className="flex items-center gap-2 p-2">
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium">{name}</p>
-                    <p className="text-xs text-muted-foreground">会員</p>
+                    <p className="text-xs text-muted-foreground">
+                      {isAdmin ? "管理者" : "会員"}
+                    </p>
                   </div>
                 </div>
                 <DropdownMenuSeparator />
+                {isAdmin && (
+                  <DropdownMenuItem asChild>
+                    <Link href="/admin" className="cursor-pointer">
+                      <Settings className="mr-2 h-4 w-4" />
+                      管理画面
+                    </Link>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem asChild>
                   <Link href="/mypage" className="cursor-pointer">
                     <User className="mr-2 h-4 w-4" />
@@ -145,7 +161,9 @@ export function Header({ isLoggedIn = false, userName = "" }: HeaderProps) {
                   </Avatar>
                   <div>
                     <p className="font-medium">{name}</p>
-                    <p className="text-sm text-muted-foreground">会員</p>
+                    <p className="text-sm text-muted-foreground">
+                      {isAdmin ? "管理者" : "会員"}
+                    </p>
                   </div>
                 </div>
               )}
